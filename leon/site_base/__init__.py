@@ -1,4 +1,5 @@
 # coding: utf-8
 
 
-from .base import BaseView, BaseParamsValidatorMixin
+from .views import BaseView, BaseParamsValidatorMixin
+from .context_processors import BaseContextProcessors

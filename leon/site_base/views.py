@@ -38,6 +38,9 @@ class BaseView(View):
         self.output_context = self.output_context or {}
         super(BaseView, self).__init__(**kwargs)
 
+    def _format(self):
+        pass
+
     def _aggregate(self):
         for item in self.output_context:
             self.output_context[item] = getattr(self, item, self.output_context[item])
