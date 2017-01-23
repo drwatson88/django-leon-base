@@ -43,6 +43,9 @@ class HeaderLinkItem(MP_Node):
         verbose_name = 'Пункт дерева ссылок'
         verbose_name_plural = 'Пункты дерева ссылок'
 
+    class Options:
+        native = True
+
     def __str__(self):
         return '{}{}'.format((self.depth - 1) * '---', self.slug_title)
 

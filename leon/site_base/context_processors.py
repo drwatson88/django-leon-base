@@ -55,6 +55,3 @@ class BaseContextProcessor(object):
         for item in self.output_context:
             self.output_context[item] = getattr(self, item, self.output_context[item])
 
-    def _format(self):
-        pass
-
