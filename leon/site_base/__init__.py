@@ -2,4 +2,4 @@
 
 
 from .views import BaseView, BaseParamsValidatorMixin
-from .context_processors import BaseContextProcessors
+from .context_processors import BaseContextProcessor

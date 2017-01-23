@@ -1,7 +1,7 @@
 # coding: utf-8
 
 
-class BaseContextProcessors (object):
+class BaseContextProcessor(object):
 
     kwargs_params_slots = {}
     request_params_slots = {}
