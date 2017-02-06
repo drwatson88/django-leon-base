@@ -1,4 +1,6 @@
-/.idea/*
-/venv/*
+.idea
+venv
 *.py[co]
+__pycache__
+venv3
 migrations
