@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import update_wrapper
+import re
 
 from django.views.generic import View
 from django.utils.decorators import classonlymethod
@@ -50,11 +51,43 @@ class BaseView(View):
             if item not in self.request.session:
                 self.request.session[item] = getattr(self, self.session_save_slots[item])
 
+    @staticmethod
+    def _exclude_assets(html):
+        css_storage = set()
+        js_storage = set()
+
+        def replace_css(obj):
+            if obj.group(0) in css_storage:
+                return ''
+            else:
+                css_storage.add(obj.group(0))
+                return obj.group(0)
+
+        def replace_js(obj):
+            if obj.group(0) in js_storage:
+                return ''
+            else:
+                js_storage.add(obj.group(0))
+                return obj.group(0)
+
+        css_pattern = re.compile(r'(@import "/static/.+\.css";)')
+        js_pattern = re.compile(r'(<script src="/static/.+\.js"></script>)')
+        html = re.sub(css_pattern,
+                      replace_css,
+                      html)
+        html = re.sub(js_pattern,
+                      replace_js,
+                      html)
+        return html
+
     def _render(self):
-        return render(
+        response = render(
             self.request,
             self._get_template_name(),
             self.output_context)
+        render_html = self._exclude_assets(response.content.decode('utf-8'))
+        response.content = render_html.encode('utf-8')
+        return response
 
     def _get_template_name(self):
         return self.template_name
