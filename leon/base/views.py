@@ -27,6 +27,7 @@ class BaseView(View):
     kwargs_params_slots = {}
     request_params_slots = {}
     session_params_slots = {}
+    cookies_params_slots = {}
     session_save_slots = {}
     params_storage = {}
     output_context = {}
@@ -122,6 +123,7 @@ class BaseView(View):
         self.params_storage = {}
         method = getattr(request, 'method')
         session = getattr(request, 'session')
+        cookies = getattr(request, 'COOKIES')
         method_params = getattr(request, method.upper())
         request_validators = getattr(self, 'request_params_slots')
         for k, v in request_validators.items():
@@ -130,6 +132,12 @@ class BaseView(View):
             self.params_storage[k] = validator(method_params.get(k), default)
 
         session_validators = getattr(self, 'session_params_slots')
+        for k, v in session_validators.items():
+            validator = v[0]
+            default = v[1]
+            self.params_storage[k] = validator(session.get(k), default)
+
+        session_validators = getattr(self, 'cookies_params_slots')
         for k, v in session_validators.items():
             validator = v[0]
             default = v[1]

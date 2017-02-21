@@ -1,24 +1,22 @@
 # coding: utf-8
 
 
-from leon.site_base import BaseContextProcessor
-from .converters import ConverterMixin
+from leon.base import BaseContextProcessor
+from .converters import HeaderConverterMixin
 
 
-class HeaderContextProcessor(BaseContextProcessor, ConverterMixin):
+class HeaderContextProcessor(BaseContextProcessor, HeaderConverterMixin):
     """
     Class for header context processor menu
     """
-    HEADER_MENU_ITEM_MODEL = None
-    SITE_SETTINGS_MODEL = None
+    ADMIN_SETTINGS_MODEL = None
     HEADER_SETTINGS_MODEL = None
 
     def _create_data(self):
-        self.menu_item_s = self.HEADER_MENU_ITEM_MODEL.objects.all()
         self.header_settings = self.HEADER_SETTINGS_MODEL.objects.all()[0] \
             if self.HEADER_SETTINGS_MODEL.objects.all() else {}
-        self.site_settings = self.SITE_SETTINGS_MODEL.objects.all()[0] \
-            if self.SITE_SETTINGS_MODEL.objects.all() else {}
+        self.admin_settings = self.ADMIN_SETTINGS_MODEL.objects.all()[0] \
+            if self.ADMIN_SETTINGS_MODEL.objects.all() else {}
 
     def __call__(self, request):
         self.header = {}

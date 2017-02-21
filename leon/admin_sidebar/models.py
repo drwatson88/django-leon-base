@@ -25,11 +25,11 @@ class SidebarSettings(models.Model):
 
     class Meta:
         abstract = True
-        verbose_name = 'Настройки шапки сайта'
-        verbose_name_plural = 'Настройки шапки сайта'
+        verbose_name = 'Настройки сайдбара сайта'
+        verbose_name_plural = 'Настройки сайдбара сайта'
 
     def __str__(self):
-        return 'Настройки шапки сайта'
+        return 'Настройки сайдбара сайта'
 
 
 class SidebarLinkItem(MP_Node):
@@ -46,13 +46,23 @@ class SidebarLinkItem(MP_Node):
     class Options:
         native = True
 
+    def get_show_children(self):
+        return self.get_children().filter(show=True)
+
     def __str__(self):
-        return '{}{}'.format((self.depth - 1) * '---', self.slug_title)
+        return '{}{}'.format((self.depth - 1) * '---', self.title)
 
 
 class SidebarMenuItem(models.Model):
 
+    TYPES = (
+        ('dashboard', 'Основное меню'),
+        ('useful_links', 'Полезные ссылки'),
+    )
+    type = models.CharField(verbose_name='Тип пункта', max_length=255, choices=TYPES)
     name = models.CharField(verbose_name='Обозначение пункта меню', max_length=255)
+    fa_icon = models.CharField(verbose_name='Иконка', max_length=255,
+                               help_text='http://fontawesome.io/icons/')
     position = models.IntegerField(verbose_name='Позиция пункта',
                                    help_text='Позиция слева направо в шапке сайта')
     item_content_type = models.ForeignKey(ContentType)
@@ -61,8 +71,8 @@ class SidebarMenuItem(models.Model):
 
     class Meta:
         abstract = True
-        verbose_name = 'Пункт меню шапки сайта'
-        verbose_name_plural = 'Пункты меню шапки сайта'
+        verbose_name = 'Пункт меню сайдбара сайта'
+        verbose_name_plural = 'Пункты меню сайдбара сайта'
 
     def __str__(self):
         return self.name
