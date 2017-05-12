@@ -18,6 +18,8 @@ class HeaderSettings(models.Model):
                             format(hashlib.md5(slugify(instance).
                                                encode(encoding='utf-8')).hexdigest(), '.jpg'))
 
+    title = models.CharField(verbose_name='Заголовок', max_length=100)
+    short = models.CharField(verbose_name='Слоган', max_length=200)
     logo = models.ImageField(verbose_name='Логотип',
                              blank=True, max_length=255,
                              upload_to=logo_upload_path)
@@ -38,6 +40,9 @@ class HeaderLinkItem(MP_Node):
     link = models.CharField(verbose_name='Ссылка', max_length=255)
     show = models.BooleanField(verbose_name='Показывать', default=True)
 
+    def get_show_children(self):
+        return self.get_children().filter(show=True)
+
     class Meta:
         abstract = True
         verbose_name = 'Пункт дерева ссылок'
@@ -47,7 +52,7 @@ class HeaderLinkItem(MP_Node):
         native = True
 
     def __str__(self):
-        return '{}{}'.format((self.depth - 1) * '---', self.slug_title)
+        return '{}{}'.format((self.depth - 1) * '---', self.title)
 
 
 class HeaderMenuItem(models.Model):

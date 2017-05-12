@@ -1,7 +1,7 @@
 # coding: utf-8
 
 
-from leon.site_base import BaseContextProcessor
+from leon.base import BaseContextProcessor
 from .converters import ConverterMixin
 
 
@@ -15,9 +15,9 @@ class HeaderContextProcessor(BaseContextProcessor, ConverterMixin):
 
     def _create_data(self):
         self.menu_item_s = self.HEADER_MENU_ITEM_MODEL.objects.all()
-        self.header_settings = self.HEADER_SETTINGS_MODEL.objects.all()[0] \
+        self.header_settings = self.HEADER_SETTINGS_MODEL.objects.all().first() \
             if self.HEADER_SETTINGS_MODEL.objects.all() else {}
-        self.site_settings = self.SITE_SETTINGS_MODEL.objects.all()[0] \
+        self.site_settings = self.SITE_SETTINGS_MODEL.objects.all().first() \
             if self.SITE_SETTINGS_MODEL.objects.all() else {}
 
     def __call__(self, request):

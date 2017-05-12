@@ -13,7 +13,7 @@ class ConverterMixin(object):
         def __init__(self, node_obj):
             self.name = node_obj.title
             if node_obj.Options.native:
-                self.link = {'href': '/{}/'.format(node_obj.link)}
+                self.link = {'href': node_obj.link}
             else:
                 self.link = {'href': '/{}/'.format('/'.join(node_obj.Options.url_path + [node_obj.slug_title]))}
             self.options = {}
@@ -30,8 +30,15 @@ class ConverterMixin(object):
             self.__recursive_node_append(item.item_content_object, main_menu_storage)
         self.header.update({
             'main_menu': main_menu_storage,
-            'logo': self.header_settings.logo,
-            'phone': self.header_settings.phone
+            'logo': {
+                'title': self.header_settings.title,
+                'short': self.header_settings.short,
+                'logo': self.header_settings.logo
+            },
+            'phone': {
+                'active': True,
+                'key': self.header_settings.phone
+            }
         })
 
     def __recursive_node_append(self, node_obj, storage):
