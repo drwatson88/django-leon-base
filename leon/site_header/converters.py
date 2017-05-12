@@ -2,6 +2,7 @@
 
 
 import os
+import json
 
 
 class ConverterMixin(object):
@@ -40,6 +41,10 @@ class ConverterMixin(object):
                 'key': self.header_settings.phone
             }
         })
+        self.extra = json.loads(self.header_settings.extra.extra_field) \
+            if hasattr(self.header_settings, 'extra') else {}
+        for k, v in self.extra.items():
+            self.header.update({k: v})
 
     def __recursive_node_append(self, node_obj, storage):
         node = self.MainMenuNode(node_obj)

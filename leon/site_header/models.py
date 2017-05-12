@@ -11,6 +11,21 @@ from django.db import models
 from treebeard.mp_tree import MP_Node
 
 
+class ExtraJsonModel(models.Model):
+
+    """ Extra Json Model
+    """
+
+    extra_field = models.CharField(verbose_name='Доп. объекты', max_length=10000,
+                                   blank=True, null=True)
+
+    def __str__(self):
+        return self.parent.title
+
+    class Meta:
+        abstract = True
+
+
 class HeaderSettings(models.Model):
 
     def logo_upload_path(self, instance):
