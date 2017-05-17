@@ -5,7 +5,10 @@ import os
 import json
 
 
-class ConverterMixin(object):
+class MainMenuConverterMixin(object):
+
+    main_menu_item_s = None
+
 
     class MainMenuNode(object):
         """
@@ -31,7 +34,7 @@ class ConverterMixin(object):
         :return:
         """
         main_menu_storage = []
-        for item in self.menu_item_s:
+        for item in self.main_menu_item_s:
             self.__recursive_node_append(item.item_content_object, main_menu_storage)
         self.header.update({
             'main_menu': main_menu_storage,

@@ -2,10 +2,10 @@
 
 
 from leon.base import BaseContextProcessor
-from .converters import ConverterMixin
+from .converters import MainMenuConverterMixin
 
 
-class HeaderContextProcessor(BaseContextProcessor, ConverterMixin):
+class MainMenuContextProcessor(BaseContextProcessor, MainMenuConverterMixin):
     """
     Class for header context processor menu
     """
