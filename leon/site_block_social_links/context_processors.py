@@ -2,31 +2,24 @@
 
 
 from leon.base import BaseContextProcessor
-from .converters import MainMenuConverterMixin
 
 
-class MainMenuContextProcessor(BaseContextProcessor, MainMenuConverterMixin):
+class SocialLinksContextProcessor(BaseContextProcessor):
     """
-    Class for header context processor menu
+    Class for social links context processor menu
     """
-    HEADER_MENU_ITEM_MODEL = None
-    SITE_SETTINGS_MODEL = None
-    HEADER_SETTINGS_MODEL = None
+    SOCIAL_LINK_MODEL = None
 
     def _create_data(self):
-        self.menu_item_s = self.HEADER_MENU_ITEM_MODEL.objects.all().order_by('position')
-        self.header_settings = self.HEADER_SETTINGS_MODEL.objects.first()
-        self.site_settings = self.SITE_SETTINGS_MODEL.objects.first()
+        self.social_link_s = self.SOCIAL_LINK_MODEL.objects.all().order_by('position')
 
     def __call__(self, request):
         self.header = {}
         self.output_context = {
-            'header': None
+            'social_link_s': None
         }
         self._init(request)
         self._create_data()
         self._format()
         self._aggregate()
         return self.output_context
-
-
