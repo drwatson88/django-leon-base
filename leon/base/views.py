@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from functools import update_wrapper
-import re
-
 from django.views.generic import View
-from django.utils.decorators import classonlymethod
-from django.template import RequestContext
 from django.shortcuts import render
+from django.template import RequestContext
 
 
 class BaseParamsValidatorMixin(object):
@@ -34,6 +30,7 @@ class BaseView(View):
     extra_context = {}
 
     template_name = None
+    context_processors = []
 
     mixin_converters = []
 
@@ -41,9 +38,6 @@ class BaseView(View):
         self.params_storage = self.params_storage or {}
         self.output_context = self.output_context or {}
         super(BaseView, self).__init__(**kwargs)
-
-    def _format(self):
-        pass
 
     def _aggregate(self):
         for item in self.output_context:
@@ -54,35 +48,6 @@ class BaseView(View):
             if item not in self.request.session:
                 self.request.session[item] = getattr(self, self.session_save_slots[item])
 
-    @staticmethod
-    def _exclude_assets(html):
-        css_storage = set()
-        js_storage = set()
-
-        def replace_css(obj):
-            if obj.group(0) in css_storage:
-                return ''
-            else:
-                css_storage.add(obj.group(0))
-                return obj.group(0)
-
-        def replace_js(obj):
-            if obj.group(0) in js_storage:
-                return ''
-            else:
-                js_storage.add(obj.group(0))
-                return obj.group(0)
-
-        css_pattern = re.compile(r'(@import "/static/.+\.css";)')
-        js_pattern = re.compile(r'(<script src="/static/.+\.js"></script>)')
-        html = re.sub(css_pattern,
-                      replace_css,
-                      html)
-        html = re.sub(js_pattern,
-                      replace_js,
-                      html)
-        return html
-
     def _format_mixin_s(self):
         for converter_name in self.mixin_converters:
             converter = getattr(self, '_format_{}'.format(converter_name))
@@ -91,13 +56,16 @@ class BaseView(View):
             self.output_context.update({converter_name: None})
 
     def _render(self):
-        response = render(
+        context = RequestContext(
+            self.request,
+            self.output_context,
+            processors=self.context_processors
+        )
+        return render(
             self.request,
             self._get_template_name(),
-            self.output_context)
-        render_html = self._exclude_assets(response.content.decode('utf-8'))
-        response.content = render_html.encode('utf-8')
-        return response
+            context=context
+        )
 
     def _get_template_name(self):
         return self.template_name
@@ -146,11 +114,11 @@ class BaseView(View):
             default = v[1]
             self.params_storage[k] = validator(session.get(k), default)
 
-        session_validators = getattr(self, 'cookies_params_slots')
-        for k, v in session_validators.items():
+        cookies_validators = getattr(self, 'cookies_params_slots')
+        for k, v in cookies_validators.items():
             validator = v[0]
             default = v[1]
-            self.params_storage[k] = validator(session.get(k), default)
+            self.params_storage[k] = validator(cookies.get(k), default)
 
         kwargs_validators = getattr(self, 'kwargs_params_slots')
         for k, v in kwargs_validators.items():

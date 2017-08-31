@@ -36,9 +36,10 @@ class BaseContextProcessor(object):
         """
 
         self.params_storage = {}
-        method = getattr(request, 'method')
         session = getattr(request, 'session')
-        method_params = getattr(request, method.upper())
+        method_params = getattr(request, getattr(request, 'method').upper())
+        kwargs_params = getattr(request, 'kwargs_params')
+
         request_validators = getattr(self, 'request_params_slots')
         for k, v in request_validators.items():
             validator = v[0]
@@ -50,6 +51,12 @@ class BaseContextProcessor(object):
             validator = v[0]
             default = v[1]
             self.params_storage[k] = validator(session.get(k), default)
+
+        kwargs_validators = getattr(self, 'kwargs_params_slots')
+        for k, v in kwargs_validators.items():
+            validator = v[0]
+            default = v[1]
+            self.params_storage[k] = validator(kwargs_params.get(k), default)
 
     def _aggregate(self):
         for item in self.output_context:
