@@ -61,6 +61,3 @@ class BaseContextProcessor(object):
     def _aggregate(self):
         for item in self.output_context:
             self.output_context[item] = getattr(self, item, self.output_context[item])
-
-    def _format(self):
-        pass

@@ -32,8 +32,6 @@ class BaseView(View):
     template_name = None
     context_processors = []
 
-    mixin_converters = []
-
     def __init__(self, **kwargs):
         self.params_storage = self.params_storage or {}
         self.output_context = self.output_context or {}
@@ -48,14 +46,8 @@ class BaseView(View):
             if item not in self.request.session:
                 self.request.session[item] = getattr(self, self.session_save_slots[item])
 
-    def _format_mixin_s(self):
-        for converter_name in self.mixin_converters:
-            converter = getattr(self, '_format_{}'.format(converter_name))
-            setattr(self, converter_name, None)
-            converter()
-            self.output_context.update({converter_name: None})
-
     def _render(self):
+        setattr(self.request, 'kwargs_params', self.kwargs_params_slots)
         context = RequestContext(
             self.request,
             self.output_context,
