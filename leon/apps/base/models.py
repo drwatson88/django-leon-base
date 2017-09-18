@@ -4,7 +4,24 @@
 from django.db import models
 
 
-class ShowMixin(models.Model):
+class BaseStatusMixin(models.Model):
+
+    """ Show Mixin
+    """
+
+    STATUSES = [
+        (1, ''),
+        (2, ''),
+        (3, '')
+    ]
+
+    status = models.CharField(verbose_name='Статус', choices=STATUSES, default=True)
+
+    class Meta:
+        abstract = True
+
+
+class BaseShowMixin(models.Model):
 
     """ Show Mixin
     """
@@ -15,7 +32,7 @@ class ShowMixin(models.Model):
         abstract = True
 
 
-class PositionMixin(models.Model):
+class BasePositionMixin(models.Model):
 
     """ Position Mixin
     """
@@ -26,7 +43,7 @@ class PositionMixin(models.Model):
         abstract = True
 
 
-class SeoMixin(models.Model):
+class BaseSeoMixin(models.Model):
 
     """ Main Seo fields Mixin
     """
@@ -43,8 +60,7 @@ class SeoMixin(models.Model):
         abstract = True
 
 
-
-class ImageUploadMixin(models.Model):
+class BaseImageUploadMixin(models.Model):
 
     """ Image Upload Mixin - use upload_directory
         for set DIR, where save images
@@ -66,7 +82,7 @@ class ImageUploadMixin(models.Model):
         abstract = True
 
 
-class FileUploadMixin(models.Model):
+class BaseFileUploadMixin(models.Model):
 
     """ File Upload Mixin - use upload_directory
         for set DIR, where save files
@@ -88,7 +104,7 @@ class FileUploadMixin(models.Model):
         abstract = True
 
 
-class ExtraJsonModel(models.Model):
+class BaseExtraJsonModel(models.Model):
 
     """ Extra Json Model
     """
