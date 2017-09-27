@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.views.generic import View
-from django.shortcuts import render
-from django.template import RequestContext
+from django.shortcuts import render_to_response
 
 
 class BaseParamsValidatorMixin(object):
@@ -46,18 +45,18 @@ class BaseView(View):
             if item not in self.request.session:
                 self.request.session[item] = getattr(self, self.session_save_slots[item])
 
+    def _context_processors(self):
+        context = {}
+        for cp in self.context_processors or []:
+            context.update(cp(self.request))
+        self.output_context.update(context)
+
     def _render(self):
         setattr(self.request, 'kwargs_params', self.kwargs_params_slots)
-        context = RequestContext(
-            self.request,
-            self.output_context,
-            processors=self.context_processors
-        )
-        return render(
-            self.request,
-            self._get_template_name(),
-            context=context
-        )
+        self._aggregate()
+        self._context_processors()
+        return render_to_response(self._get_template_name(),
+                                  self.output_context)
 
     def _get_template_name(self):
         return self.template_name

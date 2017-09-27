@@ -15,7 +15,7 @@ class BaseStatusMixin(models.Model):
         (3, '')
     ]
 
-    status = models.CharField(verbose_name='Статус', choices=STATUSES, default=True)
+    status = models.CharField(verbose_name='Статус', choices=STATUSES, default=True, max_length=20)
 
     class Meta:
         abstract = True
