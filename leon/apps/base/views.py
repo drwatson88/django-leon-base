@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
 
+
+from django.conf import settings
+from django.utils.module_loading import import_string
+from django.http import JsonResponse
 from django.views.generic import View
 from django.shortcuts import render_to_response
+from django.template.loader import render_to_string
+
+from leon.apps.base.context_processors import BaseContextProcessor
 
 
 class BaseParamsValidatorMixin(object):
@@ -29,6 +36,8 @@ class BaseView(View):
     extra_context = {}
 
     template_name = None
+    template_popup = None
+    popup = None
     context_processors = []
 
     def __init__(self, **kwargs):
@@ -46,17 +55,39 @@ class BaseView(View):
                 self.request.session[item] = getattr(self, self.session_save_slots[item])
 
     def _context_processors(self):
+        base_context_processors = settings.BASE_CONTEXT_PROCESSORS + self.context_processors
+        context_processors = \
+            set(import_string(item) for item in base_context_processors if isinstance(item, str)) | \
+            set(item for item in base_context_processors if not isinstance(item, str))
+        _context_processors = \
+            set(item() for item in context_processors if isinstance(item, type)) | \
+            set(item for item in context_processors if not isinstance(item, type))
         context = {}
-        for cp in self.context_processors or []:
+        for cp in _context_processors or []:
             context.update(cp(self.request))
         self.output_context.update(context)
 
     def _render(self):
-        setattr(self.request, 'kwargs_params', self.kwargs_params_slots)
+        if self.popup:
+            return self._render_popup()
+        else:
+            return self._render_page()
+
+    def _render_page(self):
+        setattr(self.request, 'kwargs_params', self.kwargs)
         self._aggregate()
         self._context_processors()
         return render_to_response(self._get_template_name(),
                                   self.output_context)
+
+    def _render_popup(self):
+        setattr(self.request, 'kwargs_params', self.kwargs)
+        self._aggregate()
+        self._context_processors()
+        response = {}
+        for k, v in self.template_popup.items():
+            response.update({k: render_to_string(v, self.output_context)})
+        return JsonResponse(response)
 
     def _get_template_name(self):
         return self.template_name
