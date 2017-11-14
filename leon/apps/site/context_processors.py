@@ -1,10 +1,10 @@
 # coding: utf-8
 
 
-from leon.base import BaseContextProcessor
+from leon.apps.base import BaseContextProcessor
 
 
-class MainMenuContextProcessor(BaseContextProcessor):
+class FrontMainMenuContextProcessor(BaseContextProcessor):
     """
     Class for block context processor menu
     """
@@ -28,7 +28,7 @@ class MainMenuContextProcessor(BaseContextProcessor):
         return self.output_context
 
 
-class AdditionalLinkContextProcessor(BaseContextProcessor):
+class FrontAdditionalLinkContextProcessor(BaseContextProcessor):
     """
     Class for block context processor menu
     """
@@ -52,7 +52,7 @@ class AdditionalLinkContextProcessor(BaseContextProcessor):
         return self.output_context
 
 
-class LogoContextProcessor(BaseContextProcessor):
+class FrontLogoContextProcessor(BaseContextProcessor):
     """
     Class for block context processor menu
     """
@@ -76,7 +76,7 @@ class LogoContextProcessor(BaseContextProcessor):
         return self.output_context
 
 
-class PhotoStreamContextProcessor(BaseContextProcessor):
+class FrontPhotoStreamContextProcessor(BaseContextProcessor):
     """
     Class for block context processor menu
     """
@@ -100,7 +100,7 @@ class PhotoStreamContextProcessor(BaseContextProcessor):
         return self.output_context
 
 
-class PrimaryMenuContextProcessor(BaseContextProcessor):
+class FrontPrimaryMenuContextProcessor(BaseContextProcessor):
     """
     Class for block context processor menu
     """
@@ -124,7 +124,7 @@ class PrimaryMenuContextProcessor(BaseContextProcessor):
         return self.output_context
 
 
-class RightsContextProcessor(BaseContextProcessor):
+class FrontRightsContextProcessor(BaseContextProcessor):
     """
     Class for block context processor menu
     """
@@ -148,7 +148,7 @@ class RightsContextProcessor(BaseContextProcessor):
         return self.output_context
 
 
-class SmallDescContextProcessor(BaseContextProcessor):
+class FrontSmallDescContextProcessor(BaseContextProcessor):
     """
     Class for block context processor menu
     """
@@ -172,7 +172,7 @@ class SmallDescContextProcessor(BaseContextProcessor):
         return self.output_context
 
 
-class SocialLinksContextProcessor(BaseContextProcessor):
+class FrontSocialLinksContextProcessor(BaseContextProcessor):
     """
     Class for social links context processor menu
     """

@@ -1,7 +1,19 @@
 # coding: utf-8
 
 
+import os
 from django.db import models
+
+
+class BaseUidMixin(models.Model):
+
+    """ Show Mixin
+    """
+
+    uid = models.CharField(verbose_name='UID', null=False, blank=False, max_length=10, unique=True)
+
+    class Meta:
+        abstract = True
 
 
 class BaseStatusMixin(models.Model):
@@ -10,12 +22,13 @@ class BaseStatusMixin(models.Model):
     """
 
     STATUSES = [
-        (1, ''),
-        (2, ''),
-        (3, '')
+        (0, 'Активен'),
+        (1, '1'),
+        (2, '2'),
+        (3, '3')
     ]
 
-    status = models.CharField(verbose_name='Статус', choices=STATUSES, default=True, max_length=20)
+    status = models.IntegerField(verbose_name='Статус', choices=STATUSES, default=0)
 
     class Meta:
         abstract = True

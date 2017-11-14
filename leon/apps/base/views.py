@@ -8,8 +8,6 @@ from django.views.generic import View
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 
-from leon.apps.base.context_processors import BaseContextProcessor
-
 
 class BaseParamsValidatorMixin(object):
 
