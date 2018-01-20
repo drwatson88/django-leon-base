@@ -14,6 +14,7 @@ class BaseContextProcessor(object):
         self._install_validate_s(request)
         self._validate(request)
         self.output_context = self.output_context or {}
+        self.request = request
 
     def _install_validate_s(self, request):
         for param in self.request_params_slots:

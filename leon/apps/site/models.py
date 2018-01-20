@@ -1,12 +1,13 @@
 # coding: utf-8
 
 
+import os
+import hashlib
+from django.utils.text import slugify
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
-
 from django.db import models
 from treebeard.mp_tree import MP_Node
-
 from leon.apps.base.models import BaseShowMixin
 
 
@@ -63,21 +64,6 @@ class BaseMainMenuItem(models.Model):
         return self.name
 
 
-class SocialLinksMenuItem(models.Model):
-
-    name = models.CharField(verbose_name='Обозначение пункта меню', max_length=255)
-    position = models.IntegerField(verbose_name='Позиция пункта',
-                                   help_text='Позиция слева направо в шапке сайта')
-
-    class Meta:
-        abstract = True
-        verbose_name = 'Пункт меню шапки сайта'
-        verbose_name_plural = 'Пункты меню шапки сайта'
-
-    def __str__(self):
-        return self.name
-
-
 class BaseAdditionalLinkNode(BaseShowMixin, MP_Node):
 
     title = models.CharField(verbose_name='Название пункта доп.ссылок', max_length=255)
@@ -103,7 +89,7 @@ class BaseAdditionalLinkNode(BaseShowMixin, MP_Node):
 
 class BaseAdditionalLinkItem(models.Model):
 
-    name = models.CharField(verbose_name='Обозначение пункта меню', max_length=255)
+    name = models.CharField(verbose_name='Обозначение пункта доп.ссылок', max_length=255)
     title = models.CharField(verbose_name='Название пункта доп.ссылок', max_length=255)
     position = models.IntegerField(verbose_name='Позиция пункта',
                                    help_text='Позиция слева направо')
@@ -128,12 +114,12 @@ class BaseAdditionalLinkItem(models.Model):
         return self.name
 
 
-class LogoMenuItem(models.Model):
+class BaseLogoHeaderItem(models.Model):
 
     def logo_upload_path(self, instance):
-        return os.path.join('upload_settings', '{}{}'.
-                            format(hashlib.md5(slugify(self.title).
-                                               encode(encoding='utf-8')).hexdigest(), '.jpg'))
+        return os.path.join('upload_settings',
+                            '{}{}'.format(hashlib.md5(slugify(self.title).
+                                                      encode(encoding='utf-8')).hexdigest(), '.jpg'))
 
     title = models.CharField(verbose_name='Название пункта меню', max_length=255)
     link = models.CharField(verbose_name='Ссылка', max_length=255)
@@ -142,14 +128,35 @@ class LogoMenuItem(models.Model):
 
     class Meta:
         abstract = True
-        verbose_name = 'Логотип'
-        verbose_name_plural = 'Логотипы'
+        verbose_name = 'Логотип хедера'
+        verbose_name_plural = 'Логотипы хедера'
 
     def __str__(self):
         return self.title
 
 
-class PhotoStreamItem(models.Model):
+class BaseLogoFooterItem(models.Model):
+
+    def logo_upload_path(self, instance):
+        return os.path.join('upload_settings',
+                            '{}{}'.format(hashlib.md5(slugify(self.title).
+                                                      encode(encoding='utf-8')).hexdigest(), '.jpg'))
+
+    title = models.CharField(verbose_name='Название пункта меню', max_length=255)
+    link = models.CharField(verbose_name='Ссылка', max_length=255)
+    show = models.BooleanField(verbose_name='Показывать', default=True)
+    src = models.ImageField(verbose_name='Путь к файлу изображения', upload_to=logo_upload_path)
+
+    class Meta:
+        abstract = True
+        verbose_name = 'Логотип футера'
+        verbose_name_plural = 'Логотипы футера'
+
+    def __str__(self):
+        return self.title
+
+
+class BasePhotoStreamItem(models.Model):
 
     def photo_upload_path(self, instance):
         return os.path.join('upload_settings', '{}{}'.
@@ -170,7 +177,7 @@ class PhotoStreamItem(models.Model):
         return self.title
 
 
-class PrimaryMenuItem(models.Model):
+class BasePrimaryMenuItem(models.Model):
 
     title = models.CharField(verbose_name='Название пункта меню', max_length=255)
     link = models.CharField(verbose_name='Ссылка', max_length=255)
@@ -187,11 +194,11 @@ class PrimaryMenuItem(models.Model):
         return self.title
 
 
-class RightsItem(models.Model):
+class BaseRightsDescItem(models.Model):
 
     title = models.CharField(verbose_name='Название', max_length=255)
     show = models.BooleanField(verbose_name='Показывать', default=True)
-    text = models.CharField(verbose_name='Текст')
+    text = models.CharField(verbose_name='Текст', max_length=150)
 
     class Meta:
         abstract = True
@@ -202,7 +209,7 @@ class RightsItem(models.Model):
         return self.title
 
 
-class SmallDescMenuItem(models.Model):
+class BaseSmallDescItem(models.Model):
 
     title = models.CharField(verbose_name='Название краткого описания', max_length=255)
     show = models.BooleanField(verbose_name='Показывать', default=True)
@@ -217,16 +224,35 @@ class SmallDescMenuItem(models.Model):
         return self.title
 
 
-class SocialLinksMenuItem(models.Model):
+class BaseSocialLinksItem(models.Model):
 
-    name = models.CharField(verbose_name='Обозначение пункта меню', max_length=255)
+    name = models.CharField(verbose_name='Обозначение пункта', max_length=255)
+    li_class = models.CharField(verbose_name='Класс li', max_length=20)
+    fa_class_pfx = models.CharField(verbose_name='Префикс класса fa', max_length=20)
     position = models.IntegerField(verbose_name='Позиция пункта',
                                    help_text='Позиция слева направо в шапке сайта')
 
     class Meta:
         abstract = True
-        verbose_name = 'Пункт меню шапки сайта'
-        verbose_name_plural = 'Пункты меню шапки сайта'
+        verbose_name = 'Ссылка в соц.сети'
+        verbose_name_plural = 'Ссылки в соц.сетях'
+
+    def __str__(self):
+        return self.name
+
+
+class BaseWorkingDescItem(models.Model):
+
+    name = models.CharField(verbose_name='Обозначение пункта', max_length=255)
+    desc = models.TextField(verbose_name='Описание')
+    m_fr = models.CharField(verbose_name='Пнд-Пт', max_length=30)
+    saturday = models.CharField(verbose_name='Субб', max_length=30)
+    sunday = models.CharField(verbose_name='Вскр', max_length=30)
+
+    class Meta:
+        abstract = True
+        verbose_name = 'Краткое описание работы'
+        verbose_name_plural = 'Краткие описания работы'
 
     def __str__(self):
         return self.name

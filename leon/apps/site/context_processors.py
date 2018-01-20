@@ -52,14 +52,14 @@ class FrontAdditionalLinkContextProcessor(BaseContextProcessor):
         return self.output_context
 
 
-class FrontLogoContextProcessor(BaseContextProcessor):
+class FrontLogoHeaderContextProcessor(BaseContextProcessor):
     """
     Class for block context processor menu
     """
-    LOGO_MENU_MODEL = None
+    LOGO_HEADER_MODEL = None
 
     def _create_data(self):
-        self.logo = self.LOGO_MODEL.objects.first()
+        self.logo_header = self.LOGO_HEADER_MODEL.objects.first()
 
     def _format(self):
         pass
@@ -67,7 +67,31 @@ class FrontLogoContextProcessor(BaseContextProcessor):
     def __call__(self, request):
         self.logo = {}
         self.output_context = {
-            'logo': None
+            'logo_header': None
+        }
+        self._init(request)
+        self._create_data()
+        self._format()
+        self._aggregate()
+        return self.output_context
+
+
+class FrontLogoFooterContextProcessor(BaseContextProcessor):
+    """
+    Class for block context processor menu
+    """
+    LOGO_FOOTER_MODEL = None
+
+    def _create_data(self):
+        self.logo_footer = self.LOGO_FOOTER_MODEL.objects.first()
+
+    def _format(self):
+        pass
+
+    def __call__(self, request):
+        self.logo = {}
+        self.output_context = {
+            'logo_footer': None
         }
         self._init(request)
         self._create_data()
@@ -124,7 +148,7 @@ class FrontPrimaryMenuContextProcessor(BaseContextProcessor):
         return self.output_context
 
 
-class FrontRightsContextProcessor(BaseContextProcessor):
+class FrontRightsDescContextProcessor(BaseContextProcessor):
     """
     Class for block context processor menu
     """
@@ -150,7 +174,7 @@ class FrontRightsContextProcessor(BaseContextProcessor):
 
 class FrontSmallDescContextProcessor(BaseContextProcessor):
     """
-    Class for block context processor menu
+    Class for block context processor
     """
     SMALL_DESC_MODEL = None
 
@@ -188,8 +212,45 @@ class FrontSocialLinksContextProcessor(BaseContextProcessor):
         }
         self._init(request)
         self._create_data()
-        self._format()
         self._aggregate()
         return self.output_context
 
 
+class FrontUserCityContextProcessor(BaseContextProcessor):
+    """
+    Class for user city context processor menu
+    """
+    USER_CITY_MODEL = None
+
+    def _create_data(self):
+        self.user_city_s = None
+
+    def __call__(self, request):
+        self.header = {}
+        self.output_context = {
+            'user_city_s': None
+        }
+        self._init(request)
+        self._create_data()
+        self._aggregate()
+        return self.output_context
+
+
+class FrontWorkingDescContextProcessor(BaseContextProcessor):
+    """
+    Class for working desc
+    """
+    WORKING_DESC_MODEL = None
+
+    def _create_data(self):
+        self.working_desc = self.WORKING_DESC_MODEL.objects.first()
+
+    def __call__(self, request):
+        self.header = {}
+        self.output_context = {
+            'working_desc': None
+        }
+        self._init(request)
+        self._create_data()
+        self._aggregate()
+        return self.output_context
