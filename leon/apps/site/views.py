@@ -2,6 +2,7 @@
 
 
 from django.utils.safestring import mark_safe
+from django.http import JsonResponse
 from django.contrib.sites.shortcuts import get_current_site
 from leon.apps.site.base import FrontSiteBaseView, FrontSiteParamsValidatorMixin
 
@@ -49,3 +50,48 @@ class FrontFlatpagesView(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
         self._set_flatpage()
         self._aggregate()
         return self._render()
+
+
+class FrontCallBackView(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
+
+    """ Front CallBack View. Receives get params
+        and response neither arguments in get
+        request params.
+
+        GET Params.
+
+        ALL PARAMS put in params_storage after validate
+    """
+
+    CALLBACK_MODEL = None
+
+    request_params_slots = {
+        'phone': [None, '']
+    }
+
+    kwargs_params_slots = {
+    }
+
+    def __init__(self, *args, **kwargs):
+        self.params_storage = {}
+        self.output_context = {
+            'success': None
+        }
+        super(FrontCallBackView, self).__init__(*args, **kwargs)
+
+    def _phone_set(self):
+        self.phone = self.params_storage['phone']
+
+    def _phone_validate(self):
+        pass
+
+    def _phone_save(self):
+        callback = self.CALLBACK_MODEL.objects.create(phone=self.phone)
+        callback.save()
+
+    def post(self, *args, **kwargs):
+        self._phone_set()
+        self._phone_validate()
+        self._phone_save()
+        self._aggregate()
+        return JsonResponse({'success': True})

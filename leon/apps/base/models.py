@@ -2,6 +2,8 @@
 
 
 import os
+import hashlib
+from django.utils.text import slugify
 from django.db import models
 
 
@@ -82,10 +84,8 @@ class BaseImageUploadMixin(models.Model):
     upload_image_directory = ''
 
     def image_upload_path(self, instance):
-        return os.path.join(self.upload_image_directory, '{}{}'.
-                            format(hashlib.md5(slugify(self.title).
-                                               encode(encoding='utf-8')).
-                                   hexdigest(), '.jpg'))
+        return os.path.join(self.upload_image_directory,
+                            '{}{}{}{}'.format(self.article.pk, self.meaning, self.position, '.jpg'))
 
     image = models.ImageField(verbose_name='Путь к файлу картинки',
                               blank=True, max_length=255,
@@ -104,10 +104,8 @@ class BaseFileUploadMixin(models.Model):
     upload_file_directory = ''
 
     def file_upload_path(self, instance):
-        return os.path.join(self.upload_file_directory, '{}{}'.
-                            format(hashlib.md5(slugify(self.title).
-                                               encode(encoding='utf-8')).
-                                   hexdigest(), '.jpg'))
+        return os.path.join(self.upload_file_directory,
+                            '{}{}{}{}'.format(self.article.pk, self.meaning, self.position, '.jpg'))
 
     file = models.FileField(verbose_name='URL доп.файла',
                             upload_to=file_upload_path,

@@ -3,6 +3,7 @@
 
 import os
 import hashlib
+from datetime import datetime
 from django.utils.text import slugify
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -22,7 +23,7 @@ class BaseMainMenuNode(BaseShowMixin, MP_Node):
         return self.get_children().filter(show=True)
 
     def get_absolute_url(self):
-        return self.link
+        return self.link if self.link.startswith('/') else '/' + self.link
 
     class Meta:
         abstract = True
@@ -33,7 +34,7 @@ class BaseMainMenuNode(BaseShowMixin, MP_Node):
         return '{}{}'.format((self.depth - 1) * '---', self.title)
 
 
-class BaseMainMenuItem(models.Model):
+class BaseMainMenuItem(BaseShowMixin):
 
     name = models.CharField(verbose_name='Обозначение пункта меню', max_length=255)
     title = models.CharField(verbose_name='Название пункта меню', max_length=255)
@@ -53,7 +54,7 @@ class BaseMainMenuItem(models.Model):
         self.item_content_object = obj
 
     def get_absolute_url(self):
-        return self.link
+        return self.link if self.link.startswith('/') else '/' + self.link
 
     class Meta:
         abstract = True
@@ -76,7 +77,7 @@ class BaseAdditionalLinkNode(BaseShowMixin, MP_Node):
 
     @property
     def get_absolute_url(self):
-        return self.link
+        return self.link if self.link.startswith('/') else '/' + self.link
 
     class Meta:
         abstract = True
@@ -256,3 +257,17 @@ class BaseWorkingDescItem(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class BaseCallBackItem(models.Model):
+
+    phone = models.CharField(verbose_name='Телефон', max_length=15)
+    date = models.DateTimeField(verbose_name='Время регистрации', default=datetime.now)
+
+    class Meta:
+        abstract = True
+        verbose_name = 'Заявка перезвонить'
+        verbose_name_plural = 'Заявки перезвонить'
+
+    def __str__(self):
+        return self.phone + '--' + self.date

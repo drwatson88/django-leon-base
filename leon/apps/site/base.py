@@ -14,6 +14,10 @@ class FrontSiteParamsValidatorMixin(BaseParamsValidatorMixin):
     def _url_validator(value, default):
         return value
 
+    @staticmethod
+    def _phone_validator(value, default):
+        return value
+
 
 class FrontSiteBaseView(BaseView):
 

@@ -11,7 +11,7 @@ class FrontMainMenuContextProcessor(BaseContextProcessor):
     MAIN_MENU_ITEM_MODEL = None
 
     def _create_data(self):
-        self.main_menu = self.MAIN_MENU_ITEM_MODEL.objects.all().order_by('position')
+        self.main_menu = self.MAIN_MENU_ITEM_MODEL.objects.filter(show=True).order_by('position')
 
     def _format(self):
         pass
@@ -20,6 +20,30 @@ class FrontMainMenuContextProcessor(BaseContextProcessor):
         self.main_menu = {}
         self.output_context = {
             'main_menu': None
+        }
+        self._init(request)
+        self._create_data()
+        self._format()
+        self._aggregate()
+        return self.output_context
+
+
+class FrontSidebarMenuContextProcessor(BaseContextProcessor):
+    """
+    Class for block context processor menu
+    """
+    SIDEBAR_MENU_ITEM_MODEL = None
+
+    def _create_data(self):
+        self.sidebar_menu = self.SIDEBAR_MENU_ITEM_MODEL.objects.all().order_by('position')
+
+    def _format(self):
+        pass
+
+    def __call__(self, request):
+        self.sidebar_menu = {}
+        self.output_context = {
+            'sidebar_menu': None
         }
         self._init(request)
         self._create_data()
@@ -223,15 +247,21 @@ class FrontUserCityContextProcessor(BaseContextProcessor):
     USER_CITY_MODEL = None
 
     def _create_data(self):
-        self.user_city_s = None
+        self.user_city_s = self.USER_CITY_MODEL.objects.filter(is_main=True).all().order_by('name')
+
+    def _current_city(self):
+        session = self.request.session
+        self.user_city_selected = session.get('city_id')
 
     def __call__(self, request):
         self.header = {}
         self.output_context = {
-            'user_city_s': None
+            'user_city_s': None,
+            'user_city_selected': None
         }
         self._init(request)
         self._create_data()
+        self._current_city()
         self._aggregate()
         return self.output_context
 
