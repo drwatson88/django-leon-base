@@ -96,7 +96,7 @@ class FrontCallBackView(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
     def _email_send(self):
         send_mail(
             self.EMAIL_CALLBACK_SUBJECT,
-            self.EMAIL_CALLBACK_MESSAGE,
+            self.EMAIL_CALLBACK_MESSAGE.format(phone=self.phone),
             settings.EMAIL_SEND_FROM,
             [settings.EMAIL_ADMIN],
             fail_silently=False,
@@ -109,3 +109,62 @@ class FrontCallBackView(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
         self._email_send()
         self._aggregate()
         return JsonResponse({'success': True})
+
+
+class Front404View(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
+
+    """ Front 404 View. Receives get params
+        and response neither arguments in get
+        request params.
+
+        GET Params.
+
+        ALL PARAMS put in params_storage after validate
+    """
+
+    template_name = '404.html'
+    request_params_slots = {
+    }
+
+    kwargs_params_slots = {
+    }
+
+    def __init__(self, *args, **kwargs):
+        self.params_storage = {}
+        self.output_context = {
+        }
+        super(Front404View, self).__init__(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        self._aggregate()
+        return self._render()
+
+
+class Front500View(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
+
+    """ Front 500 View. Receives get params
+        and response neither arguments in get
+        request params.
+
+        GET Params.
+
+        ALL PARAMS put in params_storage after validate
+    """
+
+    template_name = '500.html'
+    request_params_slots = {
+    }
+
+    kwargs_params_slots = {
+    }
+
+    def __init__(self, *args, **kwargs):
+        self.params_storage = {}
+        self.output_context = {
+        }
+        super(Front500View, self).__init__(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        self._aggregate()
+        return self._render()
+
