@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 
+from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.http import JsonResponse
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
 from leon.apps.site.base import FrontSiteBaseView, FrontSiteParamsValidatorMixin
 
 
@@ -64,6 +66,8 @@ class FrontCallBackView(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
     """
 
     CALLBACK_MODEL = None
+    EMAIL_CALLBACK_SUBJECT = None
+    EMAIL_CALLBACK_MESSAGE = None
 
     request_params_slots = {
         'phone': [None, '']
@@ -89,9 +93,19 @@ class FrontCallBackView(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
         callback = self.CALLBACK_MODEL.objects.create(phone=self.phone)
         callback.save()
 
+    def _email_send(self):
+        send_mail(
+            self.EMAIL_CALLBACK_SUBJECT,
+            self.EMAIL_CALLBACK_MESSAGE,
+            settings.EMAIL_SEND_FROM,
+            [settings.EMAIL_ADMIN],
+            fail_silently=False,
+        )
+
     def post(self, *args, **kwargs):
         self._phone_set()
         self._phone_validate()
         self._phone_save()
+        self._email_send()
         self._aggregate()
         return JsonResponse({'success': True})
