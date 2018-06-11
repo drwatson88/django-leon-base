@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 from django.http import JsonResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
-from leon.apps.site.base import FrontSiteBaseView, FrontSiteParamsValidatorMixin
+from ..site.base import FrontSiteBaseView, FrontSiteParamsValidatorMixin
 
 
 class FrontFlatpagesView(FrontSiteBaseView, FrontSiteParamsValidatorMixin):

@@ -10,6 +10,8 @@ Welcome to django-leon-base's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   src
+
 
 
 Indices and tables

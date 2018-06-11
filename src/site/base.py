@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from leon.apps.base import BaseView, BaseParamsValidatorMixin
+from ..base.views import BaseView, BaseParamsValidatorMixin
 
 
 class FrontSiteParamsValidatorMixin(BaseParamsValidatorMixin):

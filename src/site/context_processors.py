@@ -1,7 +1,7 @@
 # coding: utf-8
 
 
-from leon.apps.base import BaseContextProcessor
+from ..base.context_processors import BaseContextProcessor
 
 
 class FrontMainMenuContextProcessor(BaseContextProcessor):
