@@ -40,7 +40,7 @@ class BaseMainMenuItem(BaseShowMixin):
     position = models.IntegerField(verbose_name='Позиция пункта',
                                    help_text='Позиция слева направо в шапке сайта')
     link = models.CharField(verbose_name='Ссылка', max_length=255)
-    item_content_type = models.ForeignKey('django.contrib.contenttypes.models.ContentType', null=True, blank=True)
+    item_content_type = models.ForeignKey('contenttypes.ContentType', null=True, blank=True)
     item_object_id = models.PositiveIntegerField(null=True, blank=True)
     item_content_object = GenericForeignKey('item_content_type', 'item_object_id')
 
@@ -93,7 +93,7 @@ class BaseAdditionalLinkItem(models.Model):
     title = models.CharField(verbose_name='Название пункта доп.ссылок', max_length=255)
     position = models.IntegerField(verbose_name='Позиция пункта',
                                    help_text='Позиция слева направо')
-    item_content_type = models.ForeignKey('django.contrib.contenttypes.models.ContentType')
+    item_content_type = models.ForeignKey('contenttypes.ContentType')
     item_object_id = models.PositiveIntegerField()
     item_content_object = GenericForeignKey('item_content_type', 'item_object_id')
 
