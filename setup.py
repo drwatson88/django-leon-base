@@ -11,6 +11,7 @@ setup(
     author_email='dvsidorov88@mail.ru',
     url='https://github.com/dvsidorov/django-leon-base',
     packages=['leon_base',
+              'leon_base.auth',
               'leon_base.admin',
               'leon_base.base',
               'leon_base.settings',
