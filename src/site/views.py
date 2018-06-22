@@ -3,7 +3,7 @@
 
 from django.conf import settings
 from django.utils.safestring import mark_safe
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from ..site.base import FrontSiteBaseView, FrontSiteParamsValidatorMixin
@@ -42,7 +42,7 @@ class FrontFlatpagesView(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
         flatpage = self.FLATPAGE_MODEL.objects.\
             filter(url=url, sites=site_id).first()
         if not flatpage:
-            self.flatpage = {}
+            raise Http404
         self.flatpage = {
             'title': mark_safe(flatpage.title),
             'content': mark_safe(flatpage.content)
