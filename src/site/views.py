@@ -137,7 +137,9 @@ class Front404View(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
 
     def get(self, *args, **kwargs):
         self._aggregate()
-        return self._render()
+        response = self._render()
+        response.status_code = 404
+        return response
 
 
 class Front500View(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
@@ -166,5 +168,7 @@ class Front500View(FrontSiteBaseView, FrontSiteParamsValidatorMixin):
 
     def get(self, *args, **kwargs):
         self._aggregate()
-        return self._render()
+        response = self._render()
+        response.status_code = 500
+        return response
 
