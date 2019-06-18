@@ -85,6 +85,7 @@ class BaseView(View):
         response = {}
         for k, v in self.template_popup.items():
             response.update({k: render_to_string(v, self.output_context)})
+        response.update(self.data_popup)
         return JsonResponse(response)
 
     def _get_template_name(self):
